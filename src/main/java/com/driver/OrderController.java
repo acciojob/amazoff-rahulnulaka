@@ -47,9 +47,6 @@ public class OrderController {
 
         Order order= orderservice.getOrderById(orderId);
         //order should be returned with an orderId.
-        if(order==null){
-            return new ResponseEntity<>(order,HttpStatus.BAD_REQUEST);
-        }
 
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
@@ -60,9 +57,7 @@ public class OrderController {
         DeliveryPartner deliveryPartner = orderservice.getPartnerById(partnerId);
 
         //deliveryPartner should contain the value given by partnerId
-        if(deliveryPartner==null){
-            return new ResponseEntity<>(deliveryPartner,HttpStatus.BAD_REQUEST);
-        }
+
 
         return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
     }

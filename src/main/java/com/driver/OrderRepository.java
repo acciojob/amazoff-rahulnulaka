@@ -11,12 +11,10 @@ public class OrderRepository {
     HashMap<String,DeliveryPartner> deliveryPartnerdb=new HashMap<>();
     HashMap<String,List<Order>> partneroderpairdb=new HashMap<>();
     public void addOrder(Order order) {
-        if(orderdb.containsKey(order.getId()))return;
         orderdb.put(order.getId(),order);
     }
 
     public void addPartner(String partnerId) {
-        if(deliveryPartnerdb.containsKey(partnerId))return;
         deliveryPartnerdb.put(partnerId,new DeliveryPartner(partnerId));
     }
 
@@ -51,7 +49,7 @@ public class OrderRepository {
         if(deliveryPartnerdb.containsKey(partnerId)){
             return deliveryPartnerdb.get(partnerId).getNumberOfOrders();
         }
-        else return 0;
+        return 0;
     }
 
     public List<String> getOrdersByPartnerId(String partnerId) {
@@ -70,7 +68,7 @@ public class OrderRepository {
 
     public Integer getCountOfUnassignedOrders() {
         int total=orderdb.size();
-        int assigned=-0;
+        int assigned=0;
         for(String id:partneroderpairdb.keySet()){
             assigned+=partneroderpairdb.get(id).size();
         }
@@ -86,7 +84,7 @@ public class OrderRepository {
     }
 
     public int getLastDeliveryTimeByPartnerId(String partnerId) {
-        int time=0;
+        int time=Integer.MIN_VALUE;
         for(Order order:partneroderpairdb.get(partnerId)){
             time=Math.max(time,order.getDeliveryTime());
         }
@@ -94,23 +92,27 @@ public class OrderRepository {
     }
 
     public void deletePartnerById(String partnerId) {
-        if(deliveryPartnerdb.containsKey(partnerId))deliveryPartnerdb.remove(partnerId);
-        if(partneroderpairdb.containsKey(partnerId))partneroderpairdb.remove(partnerId);
+        if(deliveryPartnerdb.containsKey(partnerId)&&partneroderpairdb.containsKey(partnerId)){
+            deliveryPartnerdb.remove(partnerId);
+            partneroderpairdb.remove(partnerId);
+        }
     }
 
     public void deleteOrderById(String orderId) {
-        if(orderdb.containsKey(orderId))orderdb.remove(orderId);
-        for(String partnerId:partneroderpairdb.keySet()){
-            boolean orderdeleted=false;
-            for(int i=0;i<partneroderpairdb.get(partnerId).size();i++) {
-                if(partneroderpairdb.get(partnerId).get(i).equals(orderId)){
-                    partneroderpairdb.get(partnerId).remove(i);
-                    orderdeleted=true;
-                    break;
+        if(orderdb.containsKey(orderId)) {
+            orderdb.remove(orderId);
+            for (String partnerId : partneroderpairdb.keySet()) {
+                boolean orderdeleted = false;
+                for (int i = 0; i < partneroderpairdb.get(partnerId).size(); i++) {
+                    if (partneroderpairdb.get(partnerId).get(i).equals(orderId)) {
+                        partneroderpairdb.get(partnerId).remove(i);
+                        orderdeleted = true;
+                        break;
+                    }
                 }
-            }
-            if(orderdeleted==true){
-                deliveryPartnerdb.get(partnerId).setNumberOfOrders(-1);
+                if (orderdeleted == true) {
+                    deliveryPartnerdb.get(partnerId).setNumberOfOrders(-1);
+                }
             }
         }
     }
