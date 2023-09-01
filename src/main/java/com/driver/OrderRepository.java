@@ -104,13 +104,13 @@ public class OrderRepository {
             for (String partnerId : partneroderpairdb.keySet()) {
                 boolean orderdeleted = false;
                 for (int i = 0; i < partneroderpairdb.get(partnerId).size(); i++) {
-                    if (partneroderpairdb.get(partnerId).get(i).equals(orderId)) {
+                    if (partneroderpairdb.get(partnerId).get(i).getId().equals(orderId)) {
                         partneroderpairdb.get(partnerId).remove(i);
                         orderdeleted = true;
                         break;
                     }
                 }
-                if (orderdeleted == true) {
+                if (orderdeleted) {
                     deliveryPartnerdb.get(partnerId).setNumberOfOrders(-1);
                 }
             }
