@@ -11,11 +11,15 @@ public class OrderRepository {
     HashMap<String,DeliveryPartner> deliveryPartnerdb=new HashMap<>();
     HashMap<String,List<Order>> partneroderpairdb=new HashMap<>();
     public void addOrder(Order order) {
-        orderdb.put(order.getId(),order);
+        if(!orderdb.containsKey(order.getId())) {
+            orderdb.put(order.getId(),order);
+        }
     }
 
     public void addPartner(String partnerId) {
-        deliveryPartnerdb.put(partnerId,new DeliveryPartner(partnerId));
+        if(!deliveryPartnerdb.containsKey(partnerId)) {
+            deliveryPartnerdb.put(partnerId,new DeliveryPartner(partnerId));
+        }
     }
 
     public void addOrderPartnerPair(String orderId,String partnerId) {
